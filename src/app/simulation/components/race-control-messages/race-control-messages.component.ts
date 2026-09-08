@@ -36,9 +36,10 @@ export class RaceControlMessagesComponent implements OnInit, OnDestroy {
 
   // Persistent banner state
   // Used ONLY for:
-  // - startup GREEN
+  // - startup message
   // - CHEQUERED FLAG
   persistentMessage: RaceControlMessage | null = null;
+  private startupMessage: RaceControlMessage | null = null;
 
   // FIFO display queue
   private queue: RaceControlMessage[] = [];
@@ -84,6 +85,7 @@ export class RaceControlMessagesComponent implements OnInit, OnDestroy {
       const startupMessage = this.messagesBySecond.get(0)?.[0];
 
       if (startupMessage) {
+        this.startupMessage = startupMessage;
         this.persistentMessage = startupMessage;
 
         this.cdr.markForCheck();
@@ -116,7 +118,8 @@ export class RaceControlMessagesComponent implements OnInit, OnDestroy {
 
         // hide startup GREEN
         // only after race actually starts
-        if (raceSecond > 0 && this.persistentMessage?.flag === 'GREEN') {
+        // Hide the startup message once the race timeline moves past second 0.
+        if (raceSecond > 0 && this.persistentMessage === this.startupMessage) {
           this.persistentMessage = null;
 
           this.cdr.markForCheck();
@@ -190,7 +193,11 @@ export class RaceControlMessagesComponent implements OnInit, OnDestroy {
       .get(targetSecond)
       ?.find((m) => m.flag === 'CHEQUERED');
 
-    this.persistentMessage = chequered ?? null;
+    if (targetSecond === 0 && this.startupMessage) {
+      this.persistentMessage = this.startupMessage;
+    } else {
+      this.persistentMessage = chequered ?? null;
+    }
 
     this.cdr.markForCheck();
   }
