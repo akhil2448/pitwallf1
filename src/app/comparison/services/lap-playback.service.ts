@@ -560,41 +560,15 @@ export class LapPlaybackService {
   private publishFrame(): void {
     const progress = this.currentProgressSubject.value;
 
-    /**
-     * Playback currently uses the time-based interpolation.
-     *
-     * The previous distance-based implementation has been
-     * intentionally retained for debugging and comparison.
-     *
-     * To revert playback behaviour, replace:
-     *
-     *   interpolateTelemetryByTime()
-     *
-     * with:
-     *
-     *   interpolateTelemetry()
-     */
-
-    //
-    // Driver A
-    //
-
-    const driverA = this.interpolateTelemetryByTime(
-      this.driverATelemetry,
-      progress,
-    );
+    const driverA = this.interpolateTelemetry(this.driverATelemetry, progress);
 
     if (!driverA) {
       this.currentFrameSubject.next(null);
       return;
     }
 
-    //
-    // Driver B
-    //
-
     const driverB = this.driverBTelemetry.length
-      ? this.interpolateTelemetryByTime(this.driverBTelemetry, progress)
+      ? this.interpolateTelemetry(this.driverBTelemetry, progress)
       : null;
 
     this.currentFrameSubject.next({

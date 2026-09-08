@@ -283,9 +283,9 @@ export class TelemetryCanvasComponent implements AfterViewInit, OnChanges {
     const sampleA = frameA.sample;
 
     const frameB = this.driverB
-      ? this.playbackService.interpolateTelemetryByDistance(
+      ? this.playbackService.interpolateTelemetry(
           this.driverB.telemetry,
-          distance,
+          Number(sampleA.rd),
         )
       : null;
 
@@ -1395,9 +1395,9 @@ export class TelemetryCanvasComponent implements AfterViewInit, OnChanges {
     const result: DeltaPoint[] = [];
 
     for (const pointA of this.driverA.telemetry) {
-      const frameB = this.playbackService.interpolateTelemetryByDistance(
+      const frameB = this.playbackService.interpolateTelemetry(
         this.driverB.telemetry,
-        pointA.d,
+        Number(pointA.rd),
       );
 
       if (!frameB) {

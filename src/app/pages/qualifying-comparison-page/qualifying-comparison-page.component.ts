@@ -225,53 +225,27 @@ export class QualifyingComparisonPageComponent implements OnInit, OnDestroy {
   }
 
   get driverAGap(): number | null {
-    if (!this.comparison?.driverB) {
-      return null;
-    }
+    if (!this.comparison?.driverB) return null;
 
     const driverAFrame = this.playbackService.currentFrame?.driverA;
+    const driverBFrame = this.playbackService.currentFrame?.driverB;
 
-    if (!driverAFrame) {
-      return null;
-    }
+    if (!driverAFrame || !driverBFrame) return null;
 
-    const driverBAtSameDistance =
-      this.playbackService.interpolateTelemetryByDistance(
-        this.comparison.driverB.telemetry,
-        driverAFrame.sample.d,
-      );
-
-    if (!driverBAtSameDistance) {
-      return null;
-    }
-
-    const gap = driverAFrame.sample.t - driverBAtSameDistance.sample.t;
+    const gap = driverAFrame.elapsedTime - driverBFrame.elapsedTime;
 
     return gap > 0 ? gap : null;
   }
 
   get driverBGap(): number | null {
-    if (!this.comparison?.driverB) {
-      return null;
-    }
+    if (!this.comparison?.driverB) return null;
 
+    const driverAFrame = this.playbackService.currentFrame?.driverA;
     const driverBFrame = this.playbackService.currentFrame?.driverB;
 
-    if (!driverBFrame) {
-      return null;
-    }
+    if (!driverAFrame || !driverBFrame) return null;
 
-    const driverAAtSameDistance =
-      this.playbackService.interpolateTelemetryByDistance(
-        this.comparison.driverA.telemetry,
-        driverBFrame.sample.d,
-      );
-
-    if (!driverAAtSameDistance) {
-      return null;
-    }
-
-    const gap = driverBFrame.sample.t - driverAAtSameDistance.sample.t;
+    const gap = driverBFrame.elapsedTime - driverAFrame.elapsedTime;
 
     return gap > 0 ? gap : null;
   }
