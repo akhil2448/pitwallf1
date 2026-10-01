@@ -31,13 +31,19 @@ export const TEAM_COLORS: Record<string, string> = {
   Williams: '#00A3E0',
 
   // Haas
-  'Haas F1 Team': '#F9F2F2',
-  Haas: '#F9F2F2',
+  // 'Haas F1 Team': '#F9F2F2',
+  // Haas: '#F9F2F2',
+  'Haas F1 Team': '#ED4C67',
+  Haas: '#ED4C67',
 
   // Kick Sauber
   'Kick Sauber': '#01C00E',
   'Alfa Romeo': '#01C00E',
   Sauber: '#01C00E',
 
-  //
+  // Audi
+  Audi: '#5F6466',
+
+  // Cadillac
+  Cadillac: '#F9F2F2',
 };
