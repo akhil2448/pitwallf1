@@ -44,25 +44,20 @@ export class SimulationEngineService {
 
     this.clockSub = this.clock.raceTime$.subscribe((second) => {
       const frame = this.telemetry.getFrame(second);
-      if (!frame || !this.trackLengthMeters) return;
 
-      const cars = frame.cars.map((car) => {
-        const lap = Math.floor(car.raceDistance / this.trackLengthMeters) + 1;
+      if (!frame) return;
 
-        const lapDistance = car.raceDistance % this.trackLengthMeters;
-
-        return {
-          ...car,
-          lap,
-          lapDistance,
-          raceDistance: car.raceDistance,
-        };
-      });
-
-      this.currentFrameSubject.next({
-        ...frame,
-        cars,
-      });
+      /**
+       * Backend telemetry is already authoritative for:
+       * - lap
+       * - lapDistance
+       * - raceDistance
+       * - timingLoopIndex
+       * - x / y
+       *
+       * Do not reconstruct position from raceDistance.
+       */
+      this.currentFrameSubject.next(frame);
     });
   }
 

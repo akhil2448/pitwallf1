@@ -11,7 +11,7 @@ import { DriverPresenceService } from './driver-presence.service';
  * ✔ Speed-safe (0.5x / 1x / 2x / 4x)
  * ✔ Pause-safe (NO jitter after resume)
  * ✔ Deterministic
- * ✔ Interpolates DISTANCE only
+ * ✔ Interpolates POSITION only
  */
 @Injectable({
   providedIn: 'root',
@@ -135,36 +135,6 @@ export class TelemetryInterpolationService {
   /* INTERPOLATION LOGIC                                   */
   /* ===================================================== */
 
-  // private interpolateFrame(
-  //   prev: TelemetryFrame,
-  //   curr: TelemetryFrame,
-  //   t: number,
-  // ): TelemetryFrame {
-  //   const cars: TelemetryCar[] = curr.cars.map((currCar) => {
-  //     const prevCar = prev.cars.find((c) => c.driver === currCar.driver);
-
-  //     // New car or first frame
-  //     if (!prevCar) return currCar;
-
-  //     const interpolatedRaceDistance =
-  //       prevCar.raceDistance +
-  //       (currCar.raceDistance - prevCar.raceDistance) * t;
-
-  //     return {
-  //       ...currCar,
-
-  //       // ✅ smooth ordering
-  //       raceDistance: interpolatedRaceDistance,
-  //     };
-  //   });
-
-  //   return {
-  //     ...curr,
-  //     cars,
-  //   };
-  // }
-
-  // BETTER INTERPOLATION LOGIC
   private interpolateFrame(
     prev: TelemetryFrame,
     curr: TelemetryFrame,
@@ -179,13 +149,44 @@ export class TelemetryInterpolationService {
         return currCar;
       }
 
-      const interpolatedRaceDistance =
-        prevCar.raceDistance +
-        (currCar.raceDistance - prevCar.raceDistance) * t;
+      // /**
+      //  * Do not interpolate across a lap boundary.
+      //  *
+      //  * The backend has already provided the authoritative
+      //  * current position for the new lap.
+      //  */
+      // if (prevCar.lap !== currCar.lap) {
+      //   return currCar;
+      // }
+
+      const interpolatedX = prevCar.x + (currCar.x - prevCar.x) * t;
+
+      const interpolatedY = prevCar.y + (currCar.y - prevCar.y) * t;
+
+      const interpolatedLapDistance =
+        prevCar.lapDistance + (currCar.lapDistance - prevCar.lapDistance) * t;
 
       return {
         ...currCar,
-        raceDistance: interpolatedRaceDistance,
+
+        /**
+         * Visual position now comes directly from the
+         * backend coordinate system.
+         */
+        x: interpolatedX,
+        y: interpolatedY,
+
+        /**
+         * Keep lapDistance smooth for any visual consumers.
+         */
+        lapDistance: interpolatedLapDistance,
+
+        /**
+         * raceDistance is intentionally NOT interpolated.
+         *
+         * It is no longer part of the visual positioning path.
+         */
+        raceDistance: currCar.raceDistance,
       };
     });
 

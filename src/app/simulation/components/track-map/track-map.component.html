@@ -88,8 +88,8 @@
       <g *ngFor="let car of cars">
         <circle
           *ngIf="!isHighlighted(car.driver)"
-          [attr.cx]="getCarPosition(car.raceDistance).x"
-          [attr.cy]="getCarPosition(car.raceDistance).y"
+          [attr.cx]="car.x"
+          [attr.cy]="car.y"
           r="90"
           [attr.fill]="getCarColor(car.driver)"
           stroke="#000"
@@ -104,8 +104,8 @@
         <ng-container *ngIf="isHighlighted(car.driver)">
           <!-- OUTER HALO -->
           <circle
-            [attr.cx]="getCarPosition(car.raceDistance).x"
-            [attr.cy]="getCarPosition(car.raceDistance).y"
+            [attr.cx]="car.x"
+            [attr.cy]="car.y"
             r="145"
             fill="none"
             [attr.stroke]="getHighlightColor(car.driver)"
@@ -116,8 +116,8 @@
 
           <!-- INNER BLACK CUT RING (contrast) -->
           <circle
-            [attr.cx]="getCarPosition(car.raceDistance).x"
-            [attr.cy]="getCarPosition(car.raceDistance).y"
+            [attr.cx]="car.x"
+            [attr.cy]="car.y"
             r="112"
             fill="none"
             stroke="#000000"
@@ -127,8 +127,8 @@
 
           <!-- MAIN CAR DOT (larger) -->
           <circle
-            [attr.cx]="getCarPosition(car.raceDistance).x"
-            [attr.cy]="getCarPosition(car.raceDistance).y"
+            [attr.cx]="car.x"
+            [attr.cy]="car.y"
             r="125"
             [attr.fill]="getCarColor(car.driver)"
             stroke="#000"
@@ -136,12 +136,7 @@
           />
 
           <!-- OPTIONAL CENTER DOT (precision focus) -->
-          <circle
-            [attr.cx]="getCarPosition(car.raceDistance).x"
-            [attr.cy]="getCarPosition(car.raceDistance).y"
-            r="14"
-            fill="#ffffff"
-          />
+          <circle [attr.cx]="car.x" [attr.cy]="car.y" r="14" fill="#ffffff" />
         </ng-container>
       </g>
     </g>

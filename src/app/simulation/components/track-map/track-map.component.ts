@@ -1,9 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TelemetryCar } from '../../../core/models/race-telemetry.model';
-import { SimulationEngineService } from '../../../core/services/simulation-engine.service';
 import { TrackPoint } from '../../../core/models/track-data.model';
-import { TrackMapService } from '../../../core/services/track-map.service';
 import { DriverMetaService } from '../../../core/services/driver-meta.service';
 import { TelemetryInterpolationService } from '../../../core/services/telemetry-interpolation.service';
 import { TrackMapStateService } from '../../../core/services/track-map-state.service';
@@ -35,12 +33,8 @@ export class TrackMapComponent implements OnInit {
   /* ---------- CARS ---------- */
   cars: TelemetryCar[] = [];
 
-  /* ---------- DISTANCE MAPPING ---------- */
-  trackDistances: number[] = [];
-  totalTrackLength = 0;
+  /* ---------- TRACK STATE ---------- */
   trackReady = false;
-
-  realTrackLengthMeters = 0;
 
   @Input() highlightedDrivers: {
     driver: string | null;
@@ -56,7 +50,6 @@ export class TrackMapComponent implements OnInit {
 
       this.track = data.coordinates;
       this.trackInfo = data.trackInfo;
-      this.realTrackLengthMeters = data.trackInfo.trackLength;
 
       this.buildTrack();
     });
@@ -132,66 +125,10 @@ export class TrackMapComponent implements OnInit {
       };
     }
 
-    /* ---------- DISTANCE TABLE ---------- */
-    this.trackDistances = [0];
-    this.totalTrackLength = 0;
-
-    for (let i = startIndex + 1; i <= finishIndex; i++) {
-      const prev = this.track[i - 1];
-      const curr = this.track[i];
-      const d = Math.hypot(curr.x - prev.x, curr.y - prev.y);
-
-      this.totalTrackLength += d;
-      this.trackDistances.push(this.totalTrackLength);
-    }
-
-    /* ---------- CLOSE LOOP ---------- */
-    const start = this.track[startIndex];
-    const finish = this.track[finishIndex];
-
-    this.totalTrackLength += Math.hypot(start.x - finish.x, start.y - finish.y);
-
     this.trackReady = true;
 
     // console.log('SVG track length:', this.totalTrackLength);
     // console.log('Real track length:', this.realTrackLengthMeters);
-  }
-
-  /* ===================================================== */
-  /* POSITIONING                                           */
-  /* ===================================================== */
-  getCarPosition(raceDistance: number) {
-    if (
-      !this.trackReady ||
-      !Number.isFinite(raceDistance) ||
-      !this.realTrackLengthMeters
-    ) {
-      return this.track[0];
-    }
-
-    // 1️⃣ Convert REAL meters → SVG distance
-    const svgDistance =
-      ((raceDistance % this.realTrackLengthMeters) /
-        this.realTrackLengthMeters) *
-      this.totalTrackLength;
-
-    // 2️⃣ Find position along SVG polyline
-    for (let i = 1; i < this.trackDistances.length; i++) {
-      if (this.trackDistances[i] >= svgDistance) {
-        const prev = this.trackDistances[i - 1];
-        const ratio = (svgDistance - prev) / (this.trackDistances[i] - prev);
-
-        const p1 = this.track[i - 1];
-        const p2 = this.track[i];
-
-        return {
-          x: p1.x + (p2.x - p1.x) * ratio,
-          y: p1.y + (p2.y - p1.y) * ratio,
-        };
-      }
-    }
-
-    return this.track[0];
   }
 
   getCarColor(driver: string): string {
