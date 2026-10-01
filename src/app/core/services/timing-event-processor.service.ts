@@ -253,12 +253,13 @@ export class TimingEventProcessorService {
       );
 
       if (leaderEquivalentTime !== undefined) {
-        const equivalentGap = current.lastCrossingTime - leaderEquivalentTime;
-
-        const leaderElapsedSinceEquivalent =
-          leader.lastCrossingTime - leaderEquivalentTime;
-
-        current.gapToLeader = equivalentGap + leaderElapsedSinceEquivalent;
+        /**
+         * Both timestamps refer to the same lap/timing-loop
+         * reference, so their difference is already the gap.
+         *
+         * Do not add elapsed time again.
+         */
+        current.gapToLeader = current.lastCrossingTime - leaderEquivalentTime;
       }
 
       /**
@@ -273,12 +274,13 @@ export class TimingEventProcessorService {
       );
 
       if (aheadEquivalentTime !== undefined) {
-        const equivalentGap = current.lastCrossingTime - aheadEquivalentTime;
-
-        const aheadElapsedSinceEquivalent =
-          ahead.lastCrossingTime - aheadEquivalentTime;
-
-        current.intervalGap = equivalentGap + aheadElapsedSinceEquivalent;
+        /**
+         * Both timestamps refer to the same lap/timing-loop
+         * reference, so their difference is already the interval.
+         *
+         * Do not add elapsed time again.
+         */
+        current.intervalGap = current.lastCrossingTime - aheadEquivalentTime;
       }
     }
 
