@@ -11,7 +11,6 @@ export interface DriverTimingState {
   lap: number;
   timingLoopIndex: number;
   lastCrossingTime: number;
-  raceDistance: number;
   lapLoopCrossings: Map<number, Map<number, number>>;
   progressionScore?: number;
   gapToLeader?: number;
@@ -130,7 +129,6 @@ export class TimingEventProcessorService {
       lap: event.lap,
       timingLoopIndex: event.timingLoopIndex,
       lastCrossingTime: event.raceTime,
-      raceDistance: event.raceDistance,
       lapLoopCrossings,
       progressionScore,
       gapToLeader: existing?.gapToLeader,

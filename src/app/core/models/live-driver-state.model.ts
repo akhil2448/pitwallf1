@@ -34,7 +34,6 @@ export interface LiveDriverState {
 
   /* -------------------- Telemetry (VISUAL ONLY) ----- */
   lapDistance: number;
-  raceDistance: number;
   x: number;
   y: number;
 

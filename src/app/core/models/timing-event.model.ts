@@ -3,5 +3,4 @@ export interface TimingEvent {
   lap: number;
   timingLoopIndex: number;
   raceTime: number;
-  raceDistance: number;
 }

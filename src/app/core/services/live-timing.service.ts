@@ -84,8 +84,6 @@ export class LiveTimingService {
         lapDistance = (capped / lapRef.lapTime) * this.trackLength;
       }
 
-      const raceDistance = completedLaps * this.trackLength + lapDistance;
-
       const currentSector = this.computeSector(lapTimeSoFar, lapRef);
 
       const compound = this.getCurrentCompound(data, raceTime);
@@ -106,7 +104,6 @@ export class LiveTimingService {
         displayPosition: undefined,
 
         lapDistance,
-        raceDistance,
 
         gapToLeader: null,
         intervalGap: null,
@@ -245,10 +242,12 @@ export class LiveTimingService {
     if (a.completedLaps !== b.completedLaps) {
       return b.completedLaps - a.completedLaps;
     }
+
     if (a.lapDistance !== b.lapDistance) {
       return b.lapDistance - a.lapDistance;
     }
-    return b.raceDistance - a.raceDistance;
+
+    return 0;
   }
 
   private applyLapEndGaps(
