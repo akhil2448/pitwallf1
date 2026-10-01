@@ -276,7 +276,6 @@ export class LeaderboardService {
           tyreLife: s.tyreLife,
 
           lapDistance: t?.lapDistance ?? 0,
-          raceDistance: t?.raceDistance ?? 0,
 
           provisional: s.provisionalStatus,
           status: isOut ? 'OUT' : null,
@@ -333,7 +332,6 @@ export class LeaderboardService {
       lapsDown: 0,
 
       lapDistance: 0,
-      raceDistance: 0,
 
       isInPit: false,
 
@@ -409,8 +407,6 @@ export class LeaderboardService {
          * so control-area temporary modes still work
          */
         lapDistance: 0,
-
-        raceDistance: 0,
 
         isInPit: false,
 

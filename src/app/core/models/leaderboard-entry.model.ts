@@ -13,7 +13,6 @@ export interface LeaderboardEntry {
 
   /* ---------------- Telemetry (visual only) ----------- */
   lapDistance: number;
-  raceDistance: number;
 
   /* ---------------- State ----------------------------- */
   isInPit: boolean;
