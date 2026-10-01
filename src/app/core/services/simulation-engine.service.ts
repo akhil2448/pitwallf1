@@ -51,11 +51,8 @@ export class SimulationEngineService {
        * Backend telemetry is already authoritative for:
        * - lap
        * - lapDistance
-       * - raceDistance
        * - timingLoopIndex
        * - x / y
-       *
-       * Do not reconstruct position from raceDistance.
        */
       this.currentFrameSubject.next(frame);
     });

@@ -180,13 +180,6 @@ export class TelemetryInterpolationService {
          * Keep lapDistance smooth for any visual consumers.
          */
         lapDistance: interpolatedLapDistance,
-
-        /**
-         * raceDistance is intentionally NOT interpolated.
-         *
-         * It is no longer part of the visual positioning path.
-         */
-        raceDistance: currCar.raceDistance,
       };
     });
 

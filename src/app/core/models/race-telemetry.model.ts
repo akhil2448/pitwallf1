@@ -2,7 +2,6 @@ export interface TelemetryCar {
   driver: string;
   lap: number;
   lapDistance: number;
-  raceDistance: number;
   timingLoopIndex: number;
 
   x: number;
