@@ -30,16 +30,44 @@
 
 .spinner {
   width: 68px;
-
   height: 68px;
+
+  box-sizing: border-box;
 
   border-radius: 50%;
 
-  border: 5px solid rgba(255, 255, 255, 0.14);
+  background: conic-gradient(
+    from 0deg,
+    #ff2b2b 0deg 90deg,
+    rgba(255, 255, 255, 0.14) 90deg 360deg
+  );
 
-  border-top-color: #ff2b2b;
+  -webkit-mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 5px),
+    #000 calc(100% - 5px)
+  );
 
-  animation: spin 0.9s linear infinite;
+  mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 5px),
+    #000 calc(100% - 5px)
+  );
+
+  animation: spin 1s linear infinite;
+
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+@keyframes spin {
+  from {
+    transform: translateZ(0) rotate(0deg);
+  }
+
+  to {
+    transform: translateZ(0) rotate(360deg);
+  }
 }
 
 .text {
@@ -52,12 +80,6 @@
   letter-spacing: 0.4px;
 
   text-align: center;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
 }
 
 @keyframes fadeIn {
@@ -83,10 +105,25 @@
 
   .spinner {
     width: 44px;
-
     height: 44px;
 
-    border-width: 4px;
+    background: conic-gradient(
+      from 0deg,
+      #ff2b2b 0deg 90deg,
+      rgba(255, 255, 255, 0.14) 90deg 360deg
+    );
+
+    -webkit-mask: radial-gradient(
+      farthest-side,
+      transparent calc(100% - 4px),
+      #000 calc(100% - 4px)
+    );
+
+    mask: radial-gradient(
+      farthest-side,
+      transparent calc(100% - 4px),
+      #000 calc(100% - 4px)
+    );
   }
 
   .text {
@@ -113,10 +150,25 @@
 
   .spinner {
     width: 54px;
-
     height: 54px;
 
-    border-width: 4px;
+    background: conic-gradient(
+      from 0deg,
+      #ff2b2b 0deg 90deg,
+      rgba(255, 255, 255, 0.14) 90deg 360deg
+    );
+
+    -webkit-mask: radial-gradient(
+      farthest-side,
+      transparent calc(100% - 4px),
+      #000 calc(100% - 4px)
+    );
+
+    mask: radial-gradient(
+      farthest-side,
+      transparent calc(100% - 4px),
+      #000 calc(100% - 4px)
+    );
   }
 
   .text {
@@ -141,10 +193,25 @@
 
   .spinner {
     width: 38px;
-
     height: 38px;
 
-    border-width: 3px;
+    background: conic-gradient(
+      from 0deg,
+      #ff2b2b 0deg 90deg,
+      rgba(255, 255, 255, 0.14) 90deg 360deg
+    );
+
+    -webkit-mask: radial-gradient(
+      farthest-side,
+      transparent calc(100% - 3px),
+      #000 calc(100% - 3px)
+    );
+
+    mask: radial-gradient(
+      farthest-side,
+      transparent calc(100% - 3px),
+      #000 calc(100% - 3px)
+    );
   }
 
   .text {
@@ -171,10 +238,25 @@
 
   .spinner {
     width: 46px;
-
     height: 46px;
 
-    border-width: 4px;
+    background: conic-gradient(
+      from 0deg,
+      #ff2b2b 0deg 90deg,
+      rgba(255, 255, 255, 0.14) 90deg 360deg
+    );
+
+    -webkit-mask: radial-gradient(
+      farthest-side,
+      transparent calc(100% - 4px),
+      #000 calc(100% - 4px)
+    );
+
+    mask: radial-gradient(
+      farthest-side,
+      transparent calc(100% - 4px),
+      #000 calc(100% - 4px)
+    );
   }
 
   .text {

@@ -123,12 +123,25 @@
 
   box-sizing: border-box;
 
-  border: 2px solid rgba(255, 255, 255, 0.25);
+  border: 2px solid rgba(255, 255, 255, 0.22);
   border-top-color: #e10600;
 
   border-radius: 50%;
 
-  animation: spin 0.8s linear infinite;
+  transform-origin: 50% 50%;
+  will-change: transform;
+
+  animation: spinnerRotate 1s linear infinite;
+}
+
+@keyframes spinnerRotate {
+  from {
+    transform: rotate(0deg) translateZ(0);
+  }
+
+  to {
+    transform: rotate(360deg) translateZ(0);
+  }
 }
 
 .retry-text {
@@ -153,12 +166,6 @@
   line-height: 1.45;
 
   font-family: "Formula1", sans-serif;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
 }
 
 .failure-panel {
