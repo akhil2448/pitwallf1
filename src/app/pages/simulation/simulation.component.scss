@@ -281,7 +281,10 @@ app-fastest-lap-banner {
   align-items: center;
   justify-content: center;
 
-  padding: 24px;
+  padding: 8px;
+  padding-bottom: 18px;
+  padding-top: 12px;
+
   box-sizing: border-box;
 }
 
@@ -631,7 +634,9 @@ app-track-map {
   }
 
   .track-stage {
-    padding: 14px;
+    padding: 4px;
+    padding-bottom: 12px;
+    padding-top: 8px;
   }
 
   .post-race-overlay {

@@ -78,17 +78,6 @@ export class TrackMapComponent implements OnInit {
     /* ---------- SVG POLYLINE ---------- */
     this.trackPoints = this.track.map((p) => `${p.x},${p.y}`).join(' ');
 
-    const xs = this.track.map((p) => p.x);
-    const ys = this.track.map((p) => p.y);
-    const padding = 380;
-
-    this.viewBox = [
-      Math.min(...xs) - padding,
-      Math.min(...ys) - padding,
-      Math.max(...xs) - Math.min(...xs) + padding * 2,
-      Math.max(...ys) - Math.min(...ys) + padding * 2,
-    ].join(' ');
-
     /* ---------- START / FINISH ---------- */
     const startIndex = this.track.findIndex((p) => p.isStart);
     const finishIndex = this.track.findIndex((p) => p.isFinish);
@@ -124,6 +113,31 @@ export class TrackMapComponent implements OnInit {
         angle: Math.atan2(dy, dx) * (180 / Math.PI),
       };
     }
+
+    /* ---------- VIEWBOX ---------- */
+    const geometry = [
+      ...this.track,
+      {
+        x: this.startLine.x1,
+        y: this.startLine.y1,
+      },
+      {
+        x: this.startLine.x2,
+        y: this.startLine.y2,
+      },
+    ];
+
+    const xs = geometry.map((p) => p.x);
+    const ys = geometry.map((p) => p.y);
+
+    const padding = 220;
+
+    this.viewBox = [
+      Math.min(...xs) - padding,
+      Math.min(...ys) - padding,
+      Math.max(...xs) - Math.min(...xs) + padding * 2,
+      Math.max(...ys) - Math.min(...ys) + padding * 2,
+    ].join(' ');
 
     this.trackReady = true;
 
