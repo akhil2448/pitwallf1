@@ -1,5 +1,9 @@
 <div class="leaderboard-scale-wrapper" [style.--mobile-scale]="mobileScale">
-  <div class="leaderboard-panel" #leaderboardPanel>
+  <div
+    class="leaderboard-panel"
+    #leaderboardPanel
+    [class.status-banner-active]="trackStatus !== null"
+  >
     <div class="leaderboard-header">
       <div class="f1-logo-bw">
         <svg

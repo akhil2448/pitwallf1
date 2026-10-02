@@ -22,6 +22,7 @@ import {
   LeaderboardDisplayMode,
   LeaderboardDisplayService,
 } from '../../../core/services/leaderboard-display.service';
+import { RaceClockService } from '../../../core/services/race-clock-service';
 import { RaceFinishService } from '../../../core/services/race-finish.service';
 import { FastestLapService } from '../../../core/services/fastest-lap.service';
 import { LayoutScaleService } from '../../../core/services/layout-scale.service';
@@ -69,6 +70,42 @@ export class LeaderboardComponent implements OnInit, AfterViewInit, OnDestroy {
   private greenLap: number | null = null;
   private restartType: 'SC' | 'VSC' | 'RED' | 'YELLOW' | null = null;
 
+  /**
+   * Tracks whether a YELLOW flag began during
+   * the opening race lap.
+   *
+   * Used only to handle:
+   * LAP 1 YELLOW → immediate GREEN
+   */
+  private yellowStartedDuringOpeningLap = false;
+
+  /**
+   * Leaderboard remains hidden until the leader
+   * reaches this lap.
+   *
+   * Example:
+   * GREEN during lap 1 → hide until lap 2.
+   * GREEN during lap 25 → hide until lap 26.
+   */
+  private hideLeaderboardUntilLap: number | null = null;
+
+  /** Automatic gap → interval transition */
+  private leaderGapModeActive = false;
+  private spreadConfirmationSeconds = 0;
+  private lastSpreadCheckSecond: number | null = null;
+
+  /**
+   * "Field is spread out" heuristic:
+   * median interval must reach this threshold.
+   */
+  private readonly FIELD_SPREAD_INTERVAL_THRESHOLD = 1.0;
+
+  /**
+   * Require the condition to persist for this many
+   * race-clock seconds before switching modes.
+   */
+  private readonly FIELD_SPREAD_CONFIRMATION_SECONDS = 3;
+
   @Input()
   highlightedDrivers: { driver: string | null; color: string }[] = [];
 
@@ -82,6 +119,7 @@ export class LeaderboardComponent implements OnInit, AfterViewInit, OnDestroy {
     private raceFinish: RaceFinishService,
     private fastestLap: FastestLapService,
     private layoutScale: LayoutScaleService,
+    private raceClock: RaceClockService,
   ) {
     // Track flag state
     this.trackStatusService.status$.subscribe((status) => {
@@ -96,6 +134,16 @@ export class LeaderboardComponent implements OnInit, AfterViewInit, OnDestroy {
       ) {
         this.restartType = status === 'VSC_ENDING' ? 'VSC' : status;
       }
+
+      /*
+       * Remember that YELLOW started during lap 1.
+       *
+       * We evaluate this when YELLOW begins, rather than
+       * trying to infer it later when GREEN arrives.
+       */
+      if (status === 'YELLOW' && this.leaderLap === 1) {
+        this.yellowStartedDuringOpeningLap = true;
+      }
     });
 
     // Fire on every GREEN (race start + restarts)
@@ -109,7 +157,102 @@ export class LeaderboardComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private triggerRestartWindow(): void {
-    this.greenLap = this.leaderLap || 1;
+    const isRaceStart = this.greenLap === null;
+
+    const isSafetyCarRestart = this.restartType === 'SC';
+
+    const isRedFlagRestart = this.restartType === 'RED';
+
+    const isVscRestart = this.restartType === 'VSC';
+
+    const isEarlyYellowReturn =
+      this.restartType === 'YELLOW' && this.yellowStartedDuringOpeningLap;
+
+    /*
+     * Leader-gap mode starts after:
+     * - race start
+     * - SC restart
+     * - VSC restart
+     * - red-flag restart
+     *
+     * Yellow → GREEN does not restart
+     * the leader-gap phase.
+     */
+    if (
+      isRaceStart ||
+      isSafetyCarRestart ||
+      isVscRestart ||
+      isRedFlagRestart ||
+      isEarlyYellowReturn
+    ) {
+      this.leaderGapModeActive = true;
+
+      this.spreadConfirmationSeconds = 0;
+      this.lastSpreadCheckSecond = null;
+    }
+
+    /*
+     * Hide the leaderboard for one full lap only after:
+     * - race start
+     * - SC restart
+     * - red-flag restart
+     * - Yellow → GREEN during lap 1
+     *
+     * VSC returns the leaderboard immediately
+     * when its status disappears.
+     *
+     * Yellow after lap 1 also returns the
+     * leaderboard immediately.
+     */
+    const shouldStartOneLapHide =
+      isRaceStart ||
+      isSafetyCarRestart ||
+      isVscRestart ||
+      isRedFlagRestart ||
+      isEarlyYellowReturn;
+
+    /*
+     * Use the most current authoritative leader lap
+     * available at the moment GREEN is processed.
+     */
+    const currentLeaderLap = Math.max(
+      this.leaderboardService.getLeaderLap(),
+      this.leaderLap,
+      1,
+    );
+
+    if (shouldStartOneLapHide) {
+      /*
+       * Hide for one complete leader lap after
+       * race start / SC restart / red flag restart /
+       * opening-lap Yellow → GREEN.
+       */
+      this.hideLeaderboardUntilLap = currentLeaderLap + 1;
+    } else if (
+      this.hideLeaderboardUntilLap !== null &&
+      currentLeaderLap < this.hideLeaderboardUntilLap
+    ) {
+      /*
+       * An existing mandatory one-lap hide is still active.
+       *
+       * VSC or a normal Yellow → GREEN must NOT
+       * cancel it prematurely.
+       */
+      // Keep existing hide window.
+    } else {
+      /*
+       * No active mandatory hide window remains.
+       *
+       * VSC → GREEN and normal Yellow → GREEN
+       * can show the leaderboard immediately.
+       */
+      this.hideLeaderboardUntilLap = null;
+    }
+
+    this.greenLap = currentLeaderLap;
+
+    this.restartType = null;
+    this.yellowStartedDuringOpeningLap = false;
 
     this.clearTemporaryMode();
 
@@ -163,26 +306,67 @@ export class LeaderboardComponent implements OnInit, AfterViewInit, OnDestroy {
   /* 🔑 BROADCAST RULE GETTERS (CORRECTED)                 */
   /* ===================================================== */
 
-  /** Hide leaderboard under flags + first 2 laps after GREEN */
+  /** Hide leaderboard under flags + 1 lap after GREEN */
   get hideLeaderboard(): boolean {
     // Always show the official starting grid before the race starts
     if (this.leaderboardService.isShowingStartingGrid()) {
       return false;
     }
 
+    /*
+     * Before the first GREEN event,
+     * the live leaderboard is hidden.
+     */
+    if (this.greenLap === null) {
+      return true;
+    }
+
+    /*
+     * Always hide during:
+     * - RED
+     * - SC
+     * - VSC
+     * - VSC ENDING
+     */
     if (
       this.trackStatus === 'RED' ||
       this.trackStatus === 'SC' ||
       this.trackStatus === 'VSC' ||
-      this.trackStatus === 'VSC_ENDING' ||
-      this.trackStatus === 'YELLOW'
+      this.trackStatus === 'VSC_ENDING'
     ) {
       return true;
     }
 
-    if (this.greenLap === null) return true;
+    /*
+     * Mandatory one-lap hiding after:
+     * - race start
+     * - SC restart
+     * - VSC restart
+     * - red-flag restart
+     * - Yellow → GREEN during opening lap
+     *
+     * This check MUST happen before YELLOW,
+     * because Yellow during this protected lap
+     * must not reveal the leaderboard.
+     */
+    if (
+      this.hideLeaderboardUntilLap !== null &&
+      this.leaderLap < this.hideLeaderboardUntilLap
+    ) {
+      return true;
+    }
 
-    return this.leaderLap < this.greenLap + 1;
+    /*
+     * YELLOW normally keeps the leaderboard visible.
+     *
+     * Driver rows are compacted while the
+     * Yellow Flag banner is displayed.
+     */
+    if (this.trackStatus === 'YELLOW') {
+      return false;
+    }
+
+    return false;
   }
 
   get activeDisplayMode(): LeaderboardDisplayMode {
@@ -194,24 +378,111 @@ export class LeaderboardComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private updateBaseMode(): void {
-    if (this.greenLap === null) {
+    /*
+     * Nothing to do if we are not inside an
+     * automatic leader-gap phase.
+     */
+    if (!this.leaderGapModeActive) {
       this.baseMode = 'INTERVAL';
       return;
     }
 
-    const inRestartWindow = this.leaderLap <= this.greenLap + 1;
-
-    const showLeaderGapAfterRestart =
-      this.restartType === 'SC' ||
-      this.restartType === 'VSC' ||
-      this.restartType === 'RED';
-
-    if (inRestartWindow && showLeaderGapAfterRestart) {
+    /*
+     * During SC / VSC / VSC_ENDING / RED / YELLOW:
+     *
+     * - do not evaluate field spread
+     * - do not advance the confirmation counter
+     *
+     * The existing UI may hide the leaderboard during
+     * these statuses, but the automatic mode state remains
+     * intact until GREEN.
+     */
+    if (this.trackStatus !== null && this.trackStatus !== 'GREEN') {
       this.baseMode = 'LEADER_GAP';
       return;
     }
 
-    this.baseMode = 'INTERVAL';
+    /*
+     * The first lap after GREEN is intentionally hidden.
+     *
+     * Do not count field-spread confirmation while the
+     * leaderboard is invisible.
+     */
+    if (
+      this.hideLeaderboardUntilLap !== null &&
+      this.leaderLap < this.hideLeaderboardUntilLap
+    ) {
+      this.spreadConfirmationSeconds = 0;
+      this.lastSpreadCheckSecond = null;
+
+      this.baseMode = 'LEADER_GAP';
+      return;
+    }
+
+    /*
+     * We only count once per race-clock second.
+     *
+     * The leaderboard can receive many visual updates
+     * between race seconds.
+     */
+    const currentSecond = this.raceClock.getCurrentSecond();
+
+    if (this.lastSpreadCheckSecond !== currentSecond) {
+      this.lastSpreadCheckSecond = currentSecond;
+
+      if (this.isFieldSpreadOut(this.leaderboard)) {
+        this.spreadConfirmationSeconds++;
+      } else {
+        this.spreadConfirmationSeconds = 0;
+      }
+
+      /*
+       * Require the field to remain spread for
+       * consecutive race seconds.
+       */
+      if (
+        this.spreadConfirmationSeconds >= this.FIELD_SPREAD_CONFIRMATION_SECONDS
+      ) {
+        this.leaderGapModeActive = false;
+      }
+    }
+
+    this.baseMode = this.leaderGapModeActive ? 'LEADER_GAP' : 'INTERVAL';
+  }
+
+  private isFieldSpreadOut(entries: LeaderboardEntry[]): boolean {
+    const activeEntries = entries.filter(
+      (entry) => entry.status !== 'OUT' && (entry.lapsDown ?? 0) === 0,
+    );
+
+    /*
+     * We need enough cars for "field spread"
+     * to mean anything.
+     */
+    if (activeEntries.length < 5) {
+      return false;
+    }
+
+    const intervals = activeEntries
+      .slice(1)
+      .map((entry) => entry.intervalGap)
+      .filter(
+        (gap): gap is number => gap != null && Number.isFinite(gap) && gap >= 0,
+      )
+      .sort((a, b) => a - b);
+
+    if (intervals.length < 4) {
+      return false;
+    }
+
+    const middle = Math.floor(intervals.length / 2);
+
+    const medianInterval =
+      intervals.length % 2 === 0
+        ? (intervals[middle - 1] + intervals[middle]) / 2
+        : intervals[middle];
+
+    return medianInterval >= this.FIELD_SPREAD_INTERVAL_THRESHOLD;
   }
 
   /* ===================================================== */

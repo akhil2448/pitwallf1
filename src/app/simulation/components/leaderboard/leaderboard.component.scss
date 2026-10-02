@@ -146,6 +146,12 @@ hr {
   transition-duration: 180ms;
 }
 
+/* Temporarily compact driver rows while a track-status
+   banner is occupying the leaderboard header. */
+.leaderboard-panel.status-banner-active .driver-row:not(.final-classification) {
+  height: 30px;
+}
+
 .driver-row {
   transition:
     transform 220ms cubic-bezier(0.4, 0, 0.2, 1),
