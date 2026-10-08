@@ -41,12 +41,86 @@
     </div>
   </section>
 
+  <!-- LAB HERO -->
+
+  <section class="lab-hero-section">
+    <!-- SIMULATION LAB -->
+
+    <div class="lab-panel lab-panel-simulation">
+      <div class="lab-panel-content">
+        <div class="lab-kicker">01 — SIMULATION</div>
+
+        <h2 class="lab-title">Simulation Lab</h2>
+
+        <p class="lab-description">
+          Replay historic Formula 1 races with race timing, live positioning,
+          telemetry and official race events as the action unfolds.
+        </p>
+
+        <div class="lab-feature-list">
+          <button
+            *ngFor="let feature of simulationFeatures; let i = index"
+            class="lab-feature-link"
+            type="button"
+            (click)="scrollToFeature(feature)"
+          >
+            <span class="lab-feature-number">
+              {{ (i + 1).toString().padStart(2, "0") }}
+            </span>
+
+            <span class="lab-feature-title">
+              {{ feature.title }}
+            </span>
+
+            <span class="lab-feature-arrow"> → </span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PERFORMANCE LAB -->
+
+    <div class="lab-panel lab-panel-performance">
+      <div class="lab-panel-content">
+        <div class="lab-kicker">02 — ANALYSIS</div>
+
+        <h2 class="lab-title">Performance Lab</h2>
+
+        <p class="lab-description">
+          Go beyond the race replay with synchronized lap analysis, telemetry,
+          driving technique and race-performance comparison.
+        </p>
+
+        <div class="lab-feature-list">
+          <button
+            *ngFor="let feature of performanceFeatures; let i = index"
+            class="lab-feature-link"
+            type="button"
+            (click)="scrollToFeature(feature)"
+          >
+            <span class="lab-feature-number">
+              {{ (i + 1).toString().padStart(2, "0") }}
+            </span>
+
+            <span class="lab-feature-title">
+              {{ feature.title }}
+            </span>
+
+            <span class="lab-feature-arrow"> → </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- FEATURES -->
 
   <section
     #featureSection
     *ngFor="let feature of features; let i = index"
     class="feature-section"
+    [class.simulation-feature]="feature.lab === 'simulation'"
+    [class.performance-feature]="feature.lab === 'performance'"
     [attr.data-index]="i"
   >
     <div

@@ -19,6 +19,8 @@ export interface Feature {
   extraNote?: string;
   extraNote2?: string;
 
+  lab: 'simulation' | 'performance';
+
   type: 'video' | 'image';
 
   mediaUrl: string;
@@ -59,6 +61,7 @@ export class HomeComponent implements AfterViewInit {
         'Track every position change, interval and battle as the race unfolds',
       extraNote:
         '* Position gaps and intervals are calculated using FIA TIMING-LOOP principles',
+      lab: 'simulation',
       type: 'video',
       mediaUrl: 'assets/features/live-leaderboard.mp4',
       posterUrl: 'assets/features/live-leaderboard-poster.webp',
@@ -67,6 +70,7 @@ export class HomeComponent implements AfterViewInit {
     //   title: 'Controls Area',
     //   description:
     //     'Check PitStop count, Tyre Age & Lapped Cars anytime on the go',
+    //   lab: 'simulation',
     //   type: 'video',
     //   mediaUrl: 'assets/features/controls-area.mp4',
     // },
@@ -74,6 +78,7 @@ export class HomeComponent implements AfterViewInit {
       title: 'Interactive Track Map',
       description:
         'Watch every driver navigate the circuit with real-time car positioning',
+      lab: 'simulation',
       type: 'video',
       mediaUrl: 'assets/features/track-map.mp4',
       posterUrl: 'assets/features/track-map-poster.webp',
@@ -82,6 +87,7 @@ export class HomeComponent implements AfterViewInit {
     //   title: 'Race Control Messages',
     //   description:
     //     'Follow official FIA race control events including flags, penalties and investigations',
+    //   lab: 'simulation',
     //   type: 'video',
     //   mediaUrl: 'assets/features/race-control-messages.mp4',
     // },
@@ -89,6 +95,7 @@ export class HomeComponent implements AfterViewInit {
     //   title: 'Weather Conditions',
     //   description:
     //     'Monitor track temperature, air temperature, humidity, wind and rainfall',
+    //   lab: 'simulation',
     //   type: 'video',
     //   mediaUrl: 'assets/features/weather.mp4',
     // },
@@ -98,6 +105,7 @@ export class HomeComponent implements AfterViewInit {
     //     'Control playback speed and relive the race at your own pace',
     //   extraNote:
     //     '* At 4x speed, a 90-minute race completes in approximately 22 minutes',
+    //   lab: 'simulation',
     //   type: 'video',
     //   mediaUrl: 'assets/features/race-clock.mp4',
     // },
@@ -105,6 +113,7 @@ export class HomeComponent implements AfterViewInit {
       title: 'Driver Telemetry',
       description: 'Dive deeper into speed, throttle, brake, RPM and gear data',
       type: 'video',
+      lab: 'simulation',
       mediaUrl: 'assets/features/driver-telemetry.mp4',
       posterUrl: 'assets/features/driver-telemetry-poster.webp',
     },
@@ -112,6 +121,7 @@ export class HomeComponent implements AfterViewInit {
       title: 'Red Flag Seek',
       description:
         'Jump directly to the race restart point when a red flag interrupts the session',
+      lab: 'simulation',
       type: 'image',
       mediaUrl: 'assets/features/redflag-seek.webp',
     },
@@ -119,6 +129,7 @@ export class HomeComponent implements AfterViewInit {
       title: 'FIA Official Classification',
       description:
         'View the official FIA race classification, Fastest lap, and Championship standings at the chequered flag',
+      lab: 'simulation',
       type: 'image',
       mediaUrl: 'assets/features/final-classification.webp',
     },
@@ -128,6 +139,7 @@ export class HomeComponent implements AfterViewInit {
       description: 'Ultimate Pace & Race Management',
       extraNote: '* Ultimate Pace - Qualifying lap analysis.',
       extraNote2: `* Race Management - Explore recommended clean race laps (or) choose your own laps.`,
+      lab: 'performance',
       type: 'video',
       mediaUrl: 'assets/features/performance-lab.mp4',
       posterUrl: 'assets/features/performance-lab-poster.webp',
@@ -137,6 +149,7 @@ export class HomeComponent implements AfterViewInit {
       title: 'Analyze Race Performance',
       description: 'Compare your lap choices',
       extraNote: '* Select up to two laps from the performance chart.',
+      lab: 'performance',
       type: 'video',
       mediaUrl: 'assets/features/analyze-race-performance.mp4',
       posterUrl: 'assets/features/analyze-race-performance-poster.webp',
@@ -148,11 +161,20 @@ export class HomeComponent implements AfterViewInit {
         'Analyze race or qualifying laps side by side with synchronized telemetry graphs and track position playback.',
       extraNote:
         '* Hover over the telemetry graphs to view the per frame telemtry info.',
+      lab: 'performance',
       type: 'video',
       mediaUrl: 'assets/features/comparison-telemetry.mp4',
       posterUrl: 'assets/features/comparison-telemetry-poster.webp',
     },
   ];
+
+  readonly simulationFeatures = this.features.filter(
+    (feature) => feature.lab === 'simulation',
+  );
+
+  readonly performanceFeatures = this.features.filter(
+    (feature) => feature.lab === 'performance',
+  );
 
   @ViewChildren('featureSection')
   featureSections!: QueryList<ElementRef>;
@@ -236,7 +258,7 @@ export class HomeComponent implements AfterViewInit {
         });
       },
       {
-        threshold: 0.7,
+        threshold: 0.35,
       },
     );
 
@@ -274,6 +296,27 @@ export class HomeComponent implements AfterViewInit {
       },
       { once: true },
     );
+  }
+
+  scrollToFeature(feature: Feature): void {
+    const featureIndex = this.features.indexOf(feature);
+
+    if (featureIndex < 0) {
+      return;
+    }
+
+    const section = this.featureSections.get(featureIndex)?.nativeElement as
+      | HTMLElement
+      | undefined;
+
+    if (!section) {
+      return;
+    }
+
+    section.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
   }
 
   goToRaceSelection(): void {

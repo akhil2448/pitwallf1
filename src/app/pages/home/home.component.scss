@@ -227,6 +227,183 @@
   animation: fadeUp 0.8s ease 1.4s forwards;
 }
 
+/* ==========================================================
+   LAB HERO
+   ========================================================== */
+
+.lab-hero-section {
+  min-height: 100vh;
+
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+
+  display: grid;
+
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  overflow: hidden;
+}
+
+.lab-panel {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: clamp(48px, 6vw, 100px);
+}
+
+.lab-panel-content {
+  width: min(620px, 100%);
+}
+
+.lab-panel-simulation {
+  background: #1d1b1b;
+
+  color: #ffffff;
+}
+
+.lab-panel-performance {
+  background: #e22420;
+
+  color: #000000;
+}
+
+.lab-kicker {
+  margin-bottom: 24px;
+
+  font-family: "Formula1Bold", sans-serif;
+
+  font-size: 13px;
+
+  letter-spacing: 4px;
+
+  opacity: 0.6;
+}
+
+.lab-title {
+  margin: 0;
+
+  font-family: "Formula1Wide", "Formula1Bold", sans-serif;
+
+  font-size: clamp(42px, 5vw, 72px);
+
+  line-height: 0.95;
+
+  letter-spacing: 1px;
+}
+
+.lab-description {
+  max-width: 560px;
+
+  margin: 28px 0 48px;
+
+  font-size: clamp(17px, 1.5vw, 21px);
+
+  line-height: 1.7;
+
+  opacity: 0.72;
+}
+
+.lab-feature-list {
+  display: flex;
+
+  flex-direction: column;
+
+  width: 100%;
+}
+
+.lab-feature-link {
+  width: 100%;
+
+  min-height: 62px;
+
+  padding: 14px 0;
+
+  display: grid;
+
+  grid-template-columns: 52px minmax(0, 1fr) 28px;
+
+  align-items: center;
+
+  column-gap: 18px;
+
+  border: 0;
+
+  border-top: 1px solid currentColor;
+
+  background: transparent;
+
+  color: inherit;
+
+  font: inherit;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  opacity: 0.78;
+
+  transition:
+    opacity 0.25s ease,
+    padding-left 0.25s ease;
+}
+
+.lab-feature-link:last-child {
+  border-bottom: 1px solid currentColor;
+}
+
+.lab-feature-link:hover {
+  opacity: 1;
+
+  padding-left: 10px;
+}
+
+.lab-feature-link:focus-visible {
+  outline: 2px solid currentColor;
+
+  outline-offset: 4px;
+}
+
+.lab-feature-number {
+  font-family: "Formula1Bold", sans-serif;
+
+  font-size: 13px;
+
+  letter-spacing: 2px;
+
+  opacity: 0.55;
+}
+
+.lab-feature-title {
+  min-width: 0;
+
+  font-family: "Formula1Bold", sans-serif;
+
+  font-size: clamp(15px, 1.35vw, 19px);
+
+  line-height: 1.3;
+}
+
+.lab-feature-arrow {
+  font-size: 22px;
+
+  line-height: 1;
+
+  text-align: right;
+
+  opacity: 0.5;
+
+  transition: transform 0.25s ease;
+}
+
+.lab-feature-link:hover .lab-feature-arrow {
+  transform: translateX(5px);
+
+  opacity: 1;
+}
+
 /* FEATURES */
 
 .feature-section {
@@ -245,8 +422,21 @@
 
 .feature-section,
 .hero-section,
+.lab-hero-section,
 .cta-section {
   scroll-snap-stop: always;
+}
+
+.simulation-feature {
+  background: #1d1b1b;
+
+  color: #ffffff;
+}
+
+.performance-feature {
+  background: #e22420;
+
+  color: #000000;
 }
 
 .feature-card {
@@ -433,6 +623,24 @@ video.feature-media {
   font-style: italic;
 
   max-width: 420px;
+}
+
+.performance-feature .feature-number {
+  color: #000000;
+}
+
+.performance-feature .feature-description {
+  color: rgba(0, 0, 0, 0.72);
+}
+
+.performance-feature .feature-note {
+  color: rgba(0, 0, 0, 0.52);
+}
+
+.performance-feature .feature-media {
+  border-color: rgba(0, 0, 0, 0.14);
+
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
 }
 
 .feature-card.reverse .feature-note {
@@ -811,6 +1019,64 @@ video.feature-media {
    ========================================================== */
 
 @media (max-width: 1024px) and (orientation: portrait) {
+  .lab-hero-section {
+    min-height: 100svh;
+
+    grid-template-columns: 1fr;
+
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+  }
+
+  .lab-panel {
+    padding: 40px 28px;
+  }
+
+  .lab-panel-content {
+    width: min(620px, 100%);
+  }
+
+  .lab-kicker {
+    margin-bottom: 14px;
+
+    font-size: 10px;
+
+    letter-spacing: 3px;
+  }
+
+  .lab-title {
+    font-size: clamp(34px, 9vw, 48px);
+  }
+
+  .lab-description {
+    margin: 18px 0 28px;
+
+    font-size: 15px;
+
+    line-height: 1.55;
+  }
+
+  .lab-feature-link {
+    min-height: 52px;
+
+    grid-template-columns: 38px minmax(0, 1fr) 24px;
+
+    column-gap: 10px;
+
+    padding: 10px 0;
+  }
+
+  .lab-feature-number {
+    font-size: 11px;
+  }
+
+  .lab-feature-title {
+    font-size: 14px;
+  }
+
+  .lab-feature-arrow {
+    font-size: 18px;
+  }
+
   .feature-section {
     padding: 48px 20px;
   }
@@ -934,6 +1200,50 @@ video.feature-media {
    ========================================================== */
 
 @media (max-width: 1024px) and (orientation: landscape) {
+  .lab-panel {
+    padding: 32px 36px;
+  }
+
+  .lab-kicker {
+    margin-bottom: 12px;
+
+    font-size: 9px;
+
+    letter-spacing: 3px;
+  }
+
+  .lab-title {
+    font-size: clamp(30px, 5vw, 46px);
+  }
+
+  .lab-description {
+    margin: 14px 0 22px;
+
+    font-size: 14px;
+
+    line-height: 1.45;
+  }
+
+  .lab-feature-link {
+    min-height: 40px;
+
+    grid-template-columns: 36px minmax(0, 1fr) 20px;
+
+    padding: 7px 0;
+  }
+
+  .lab-feature-number {
+    font-size: 10px;
+  }
+
+  .lab-feature-title {
+    font-size: 12px;
+  }
+
+  .lab-feature-arrow {
+    font-size: 16px;
+  }
+
   .feature-section {
     padding: 40px;
   }
