@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
@@ -43,6 +43,7 @@ export class HomeComponent implements AfterViewInit {
     private router: Router,
     private raceContext: RaceContextService,
     public pwaService: PwaService,
+    private readonly cdr: ChangeDetectorRef,
   ) {}
 
   readonly showInstallDialog = signal(false);
@@ -250,6 +251,9 @@ export class HomeComponent implements AfterViewInit {
           if (entry.isIntersecting) {
             this.visibleSections.add(index);
 
+            // Ensure Angular updates the feature-card's .visible class.
+            this.cdr.detectChanges();
+
             if (video) {
               video.muted = true;
               video.playsInline = true;
@@ -264,7 +268,7 @@ export class HomeComponent implements AfterViewInit {
         });
       },
       {
-        threshold: 0.35,
+        threshold: 0.1,
       },
     );
 

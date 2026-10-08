@@ -642,6 +642,32 @@
   color: #000000;
 }
 
+/* Performance Lab: fade from the dark theme into red */
+
+.performance-feature-start {
+  background: linear-gradient(
+    to bottom,
+    #1d1b1b 0%,
+    #292020 10%,
+    #7e211f 25%,
+    #e22420 48%,
+    #e22420 100%
+  );
+}
+
+/* Performance Lab: fade from red back into the dark theme */
+
+.performance-feature-end {
+  background: linear-gradient(
+    to bottom,
+    #e22420 0%,
+    #e22420 52%,
+    #7e211f 75%,
+    #292020 90%,
+    #1d1b1b 100%
+  );
+}
+
 :host
   ::ng-deep
   .performance-feature
