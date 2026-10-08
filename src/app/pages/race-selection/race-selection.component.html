@@ -85,11 +85,17 @@
       </div>
 
       <div class="race-actions">
-        <button class="jump-button" (click)="jumpToQualifyingResults(race)">
+        <button
+          class="lab-button simulation-button"
+          (click)="openSimulationLab(race)"
+        >
           SIMULATION LAB
         </button>
 
-        <button class="performance-button" (click)="openPerformanceLab(race)">
+        <button
+          class="lab-button performance-button"
+          (click)="openPerformanceLab(race)"
+        >
           PERFORMANCE LAB
         </button>
       </div>

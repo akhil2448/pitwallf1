@@ -214,7 +214,7 @@ export class RaceSelectionComponent implements OnInit {
     });
   }
 
-  async jumpToQualifyingResults(race: RaceSchedule): Promise<void> {
+  async openSimulationLab(race: RaceSchedule): Promise<void> {
     this.raceContext.selectedYear = this.selectedYear;
 
     this.raceContext.selectedRound = race.round;

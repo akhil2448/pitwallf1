@@ -400,22 +400,14 @@
   flex: 1;
 }
 
-.performance-button {
-  @extend .jump-button;
-}
-
-.jump-button {
+.lab-button {
   margin-top: auto;
+
+  min-height: 46px;
 
   padding: 12px 16px;
 
-  border: none;
-
   border-radius: 6px;
-
-  background: #e10600;
-
-  color: white;
 
   cursor: pointer;
 
@@ -423,11 +415,60 @@
 
   font-size: 12px;
 
-  transition: background 0.2s ease;
+  letter-spacing: 0.5px;
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
-.jump-button:hover {
-  background: #ff1c15;
+/* ==========================================================
+   SIMULATION LAB
+   ========================================================== */
+
+.simulation-button {
+  background: #f8f4f1;
+  border: 1px solid #f8f4f1;
+  color: #1d1b1b;
+}
+
+.simulation-button:hover {
+  background: #ffffff;
+
+  border-color: #ffffff;
+
+  transform: translateY(-2px);
+
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}
+
+/* ==========================================================
+   PERFORMANCE LAB
+   ========================================================== */
+
+.performance-button {
+  background: #e22420;
+
+  border: 1px solid #e22420;
+
+  color: #ffffff;
+
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.18);
+}
+
+.performance-button:hover {
+  background: #ff3a35;
+
+  border-color: #ff3a35;
+
+  color: #ffffff;
+
+  transform: translateY(-2px);
+
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
 }
 
 /* ==========================================================
@@ -615,11 +656,11 @@
     flex-direction: column;
   }
 
-  .jump-button {
-    width: 100%;
+  // .jump-button {
+  //   width: 100%;
 
-    height: 46px;
-  }
+  //   height: 46px;
+  // }
 
   .toolbar-spacer {
     display: none;

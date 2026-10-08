@@ -946,7 +946,7 @@ video.feature-media {
 
   height: 58px;
 
-  padding: 0 36px;
+  padding: 0 28px;
 
   border: none;
 
@@ -1671,9 +1671,10 @@ video.feature-media {
   .cta-button {
     margin-top: 40px;
 
-    width: min(520px, 100%);
+    // width: min(520px, 100%);
 
-    height: 56px;
+    width: auto;
+    height: 48px;
 
     font-size: 15px;
   }
