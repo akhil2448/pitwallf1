@@ -383,19 +383,66 @@
    ========================================================== */
 
 .lab-hero-section {
+  position: relative;
+  isolation: isolate;
+
   min-height: 100vh;
 
   scroll-snap-align: start;
   scroll-snap-stop: always;
 
   display: grid;
-
   grid-template-columns: repeat(2, minmax(0, 1fr));
 
   overflow: hidden;
+
+  background: #1d1b1b;
+}
+
+/* Shared background for both panels */
+.lab-hero-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  z-index: 0;
+  pointer-events: none;
+
+  background:
+    /* Top and bottom: blend gently into the dark page */
+    linear-gradient(
+      to bottom,
+      #1d1b1b 0%,
+      rgba(29, 27, 27, 0.78) 1.5%,
+      rgba(29, 27, 27, 0.38) 4%,
+      rgba(29, 27, 27, 0.1) 6.5%,
+      transparent 8%,
+      transparent 92%,
+      rgba(29, 27, 27, 0.1) 93.5%,
+      rgba(29, 27, 27, 0.38) 96%,
+      rgba(29, 27, 27, 0.78) 98.5%,
+      #1d1b1b 100%
+    ),
+    /* Horizontal blend: balanced dark/red split */
+    linear-gradient(
+        to right,
+        #1d1b1b 0%,
+        #1d1b1b 42%,
+        #211b1b 45%,
+        #2b1e1d 48%,
+        #38201f 51%,
+        #54211f 54%,
+        #84231f 58%,
+        #c52a23 62%,
+        #e22420 66%,
+        #e22420 100%
+      );
 }
 
 .lab-panel {
+  position: relative;
+  z-index: 1;
+
   min-width: 0;
 
   display: flex;
@@ -404,45 +451,56 @@
 
   padding: clamp(72px, 8vh, 110px) clamp(48px, 6vw, 100px);
 
-  transition:
-    opacity 0.3s ease,
-    box-shadow 0.3s ease;
+  background: transparent;
 }
 
+/* ==========================================================
+   LAB HERO — CONTENT-FOCUSED HOVER
+   ========================================================== */
+
 @media (hover: hover) and (pointer: fine) {
-  .lab-hero-section:hover .lab-panel:not(:hover) {
-    opacity: 0.62;
-  }
-
-  .lab-panel:hover {
+  /* Keep the active panel at full strength */
+  .lab-panel-content {
     opacity: 1;
+    transform: translateY(0);
+    filter: none;
+
+    transition:
+      opacity 0.35s ease,
+      transform 0.35s ease,
+      filter 0.35s ease;
   }
 
-  .lab-panel-simulation:hover {
-    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.28);
+  /* Gently de-emphasize the opposite panel's content only */
+  .lab-hero-section:hover .lab-panel:not(:hover) .lab-panel-content {
+    opacity: 0.55;
+    transform: translateY(4px);
+    filter: saturate(0.75);
   }
 
-  .lab-panel-performance:hover {
-    box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.22);
+  /* Keep hovered content prominent */
+  .lab-hero-section .lab-panel:hover .lab-panel-content {
+    opacity: 1;
+    transform: translateY(-2px);
+    filter: none;
   }
 }
 
 .lab-panel-content {
+  position: relative;
+  z-index: 1;
+
   width: min(620px, 100%);
+
+  transition: opacity 0.3s ease;
 }
 
 .lab-panel-simulation {
-  background: #1d1b1b;
-
   color: #ffffff;
 }
 
 .lab-panel-performance {
-  background: #e22420;
-
   color: #000000;
-
-  box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.06);
 }
 
 .lab-kicker {
@@ -1295,6 +1353,38 @@ video.feature-media {
   .lab-intro-labs {
     margin-top: -20px;
   }
+
+  .lab-hero-section::before {
+    background:
+    /* Keep the existing top/bottom fade */
+      linear-gradient(
+        to bottom,
+        #1d1b1b 0%,
+        rgba(29, 27, 27, 0.78) 1.5%,
+        rgba(29, 27, 27, 0.38) 4%,
+        rgba(29, 27, 27, 0.1) 6.5%,
+        transparent 8%,
+        transparent 92%,
+        rgba(29, 27, 27, 0.1) 93.5%,
+        rgba(29, 27, 27, 0.38) 96%,
+        rgba(29, 27, 27, 0.78) 98.5%,
+        #1d1b1b 100%
+      ),
+      /* Compact-screen horizontal blend */
+        linear-gradient(
+          to right,
+          #1d1b1b 0%,
+          #1d1b1b 43%,
+          #211b1b 46%,
+          #2b1e1d 49%,
+          #38201f 52%,
+          #54211f 55%,
+          #84231f 59%,
+          #c52a23 63%,
+          #e22420 67%,
+          #e22420 100%
+        );
+  }
 }
 
 /* ==========================================================
@@ -1371,6 +1461,45 @@ video.feature-media {
     justify-content: center;
 
     padding: 40px 28px;
+  }
+
+  /* Portrait only: the two labs are stacked vertically */
+
+  .lab-hero-section::before {
+    display: none;
+  }
+
+  .lab-panel-simulation {
+    background: #1d1b1b;
+  }
+
+  /* Compact red-dominant fade for the stacked Performance panel */
+  .lab-panel-performance {
+    background:
+    /* Subtle side fades */
+      linear-gradient(
+        to right,
+        rgba(29, 27, 27, 0.12) 0%,
+        rgba(29, 27, 27, 0.04) 2%,
+        transparent 7%,
+        transparent 93%,
+        rgba(29, 27, 27, 0.03) 97%,
+        rgba(29, 27, 27, 0.1) 100%
+      ),
+      /* Short fades at the top and bottom */
+        linear-gradient(
+          to bottom,
+          #1d1b1b 0%,
+          #61211f 2%,
+          #b72722 5%,
+          #e22420 9%,
+          #e22420 91%,
+          #b72722 95%,
+          #61211f 98%,
+          #1d1b1b 100%
+        );
+
+    box-shadow: none;
   }
 
   .lab-panel-content {
