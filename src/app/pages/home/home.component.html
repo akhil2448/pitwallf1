@@ -176,11 +176,11 @@
     [class.performance-feature]="feature.lab === 'performance'"
     [class.performance-feature-start]="
       feature.lab === 'performance' &&
-      (i === 5 || features[i - 1]?.lab !== 'performance')
+      (i === 5 || features[i - 1].lab !== 'performance')
     "
     [class.performance-feature-end]="
       feature.lab === 'performance' &&
-      (i === features.length - 1 || features[i + 1]?.lab !== 'performance')
+      (i === features.length - 1 || features[i + 1].lab !== 'performance')
     "
     [attr.data-index]="i"
   >

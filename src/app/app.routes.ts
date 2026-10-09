@@ -1,17 +1,9 @@
 import { Routes } from '@angular/router';
 import { LayoutComponent } from './layout/layout.component';
-import { HomeComponent } from './pages/home/home.component';
-import { RaceSelectionComponent } from './pages/race-selection/race-selection.component';
-import { SimulationComponent } from './pages/simulation/simulation.component';
-import { QualifyingComponent } from './pages/qualifying/qualifying.component';
-import { NotFoundComponent } from './pages/not-found/not-found.component';
 
 import { selectRaceGuard } from './core/guards/select-race.guard';
 import { qualifyingGuard } from './core/guards/qualifying.guard';
 import { simulationGuard } from './core/guards/simulation.guard';
-import { QualifyingComparisonPageComponent } from './pages/qualifying-comparison-page/qualifying-comparison-page.component';
-import { PerformanceLabComponent } from './pages/performance-lab/performance-lab.component';
-import { RaceComparisonPageComponent } from './pages/race-comparison-page/race-comparison-page.component';
 import { qualifyingComparisonGuard } from './core/guards/qualifying-comparison.guard';
 import { raceComparisonGuard } from './core/guards/race-comparison.guard';
 import { performanceLabGuard } from './core/guards/performance-lab.guard';
@@ -21,40 +13,65 @@ export const routes: Routes = [
     path: '',
     component: LayoutComponent,
     children: [
-      { path: '', component: HomeComponent },
+      {
+        path: '',
+        loadComponent: () =>
+          import('./pages/home/home.component').then((m) => m.HomeComponent),
+      },
       {
         path: 'select-race',
-        component: RaceSelectionComponent,
+        loadComponent: () =>
+          import('./pages/race-selection/race-selection.component').then(
+            (m) => m.RaceSelectionComponent,
+          ),
         canActivate: [selectRaceGuard],
       },
       {
         path: 'qualifying/:year/:round',
-        component: QualifyingComponent,
+        loadComponent: () =>
+          import('./pages/qualifying/qualifying.component').then(
+            (m) => m.QualifyingComponent,
+          ),
         canActivate: [qualifyingGuard],
       },
       {
         path: 'simulation',
-        component: SimulationComponent,
+        loadComponent: () =>
+          import('./pages/simulation/simulation.component').then(
+            (m) => m.SimulationComponent,
+          ),
         canActivate: [simulationGuard],
       },
       {
         path: 'qualifying-comparison',
-        component: QualifyingComparisonPageComponent,
+        loadComponent: () =>
+          import('./pages/qualifying-comparison-page/qualifying-comparison-page.component').then(
+            (m) => m.QualifyingComparisonPageComponent,
+          ),
         canActivate: [qualifyingComparisonGuard],
       },
       {
         path: 'race-comparison',
-        component: RaceComparisonPageComponent,
+        loadComponent: () =>
+          import('./pages/race-comparison-page/race-comparison-page.component').then(
+            (m) => m.RaceComparisonPageComponent,
+          ),
         canActivate: [raceComparisonGuard],
       },
       {
         path: 'performance-lab',
-        component: PerformanceLabComponent,
+        loadComponent: () =>
+          import('./pages/performance-lab/performance-lab.component').then(
+            (m) => m.PerformanceLabComponent,
+          ),
         canActivate: [performanceLabGuard],
       },
       {
         path: '**',
-        component: NotFoundComponent,
+        loadComponent: () =>
+          import('./pages/not-found/not-found.component').then(
+            (m) => m.NotFoundComponent,
+          ),
       },
     ],
   },
