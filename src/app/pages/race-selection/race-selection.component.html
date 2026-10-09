@@ -50,7 +50,78 @@
 
   <div *ngIf="!loading && !error" class="race-grid">
     <div class="race-card" *ngFor="let race of races">
-      <div class="round-label">ROUND {{ race.round }}</div>
+      <div class="round-row">
+        <div class="round-label">ROUND {{ race.round }}</div>
+
+        <div class="session-availability">
+          <div class="availability-item">
+            <!-- TO CHECK THE FAKE UNAVAILABLE CASE -->
+            <!-- <ng-container [ngSwitch]="null">
+              <span
+                *ngSwitchDefault
+                class="status-unavailable"
+                role="img"
+                aria-label="Qualifying session data availability unknown"
+                title="Qualifying session data availability unknown"
+              ></span>
+            </ng-container> -->
+
+            <ng-container [ngSwitch]="race.qualifyingDataStatus">
+              <span
+                *ngSwitchCase="'complete'"
+                class="status-light status-light--complete"
+                role="img"
+                aria-label="Qualifying data complete"
+              ></span>
+
+              <span
+                *ngSwitchCase="'failed'"
+                class="status-light status-light--failed"
+                role="img"
+                aria-label="Qualifying data failed"
+              ></span>
+
+              <span
+                *ngSwitchDefault
+                class="status-unavailable"
+                role="img"
+                aria-label="Qualifying session data availability unknown"
+                title="Qualifying session data availability unknown"
+              ></span>
+            </ng-container>
+
+            <span class="availability-label">QUALIFYING</span>
+          </div>
+
+          <div class="availability-item">
+            <ng-container [ngSwitch]="race.raceDataStatus">
+              <span
+                *ngSwitchCase="'complete'"
+                class="status-light status-light--complete"
+                role="img"
+                aria-label="Race data complete"
+              ></span>
+
+              <span
+                *ngSwitchCase="'failed'"
+                class="status-light status-light--failed"
+                role="img"
+                aria-label="Race data failed"
+              ></span>
+
+              <span
+                *ngSwitchDefault
+                class="status-unavailable"
+                role="img"
+                aria-label="Race session data availability unknown"
+                title="Race session data availability unknown"
+              ></span>
+            </ng-container>
+
+            <span class="availability-label">RACE</span>
+          </div>
+        </div>
+      </div>
 
       <div class="race-header">
         <div class="race-info">

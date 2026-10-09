@@ -37,6 +37,9 @@ export interface RaceSchedule {
 
   qualifyingLocalDisplay: string;
   raceLocalDisplay: string;
+
+  qualifyingDataStatus?: string | null;
+  raceDataStatus?: string | null;
 }
 
 interface YearScheduleResponse {

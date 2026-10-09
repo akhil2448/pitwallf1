@@ -310,14 +310,81 @@
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
 }
 
+.round-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
 .round-label {
   font-family: "Formula1", "KHInterference", sans-serif;
-
   font-size: 11px;
-
   opacity: 0.7;
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
 
-  margin-bottom: 12px;
+.session-availability {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 14px;
+  margin-left: auto;
+}
+
+.availability-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.availability-label {
+  font-family: "Formula1Bold", "Formula1", "KHInterference", sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.2px;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.status-light {
+  display: inline-block;
+  flex: 0 0 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.status-light--complete {
+  background: #27d17f;
+  box-shadow: 0 0 7px rgba(39, 209, 127, 0.45);
+}
+
+.status-light--failed {
+  background: #f04444;
+  box-shadow: 0 0 7px rgba(240, 68, 68, 0.4);
+}
+
+.status-unavailable {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 9px;
+  width: 9px;
+  height: 9px;
+  border: 1.5px solid #9ca3af;
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+.status-unavailable::after {
+  content: "";
+  width: 4px;
+  height: 1.5px;
+  background: #9ca3af;
+  border-radius: 1px;
 }
 
 .race-header {
@@ -950,5 +1017,27 @@
     padding: 0 18px;
 
     line-height: 1.15;
+  }
+}
+
+/* ==========================================================
+   SMALL MOBLE DEVICES
+   ========================================================== */
+@media (max-width: 380px) {
+  .round-row {
+    gap: 8px;
+  }
+
+  .session-availability {
+    gap: 8px;
+  }
+
+  .availability-item {
+    gap: 4px;
+  }
+
+  .availability-label {
+    font-size: 8px;
+    letter-spacing: 0;
   }
 }
