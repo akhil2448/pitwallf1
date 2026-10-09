@@ -1,5 +1,6 @@
-<div class="track-container" *ngIf="trackInfo">
+<div class="track-container" #trackContainer *ngIf="trackInfo">
   <svg
+    #trackSvg
     class="track-svg"
     [class.mirrored]="isMirrored"
     [attr.viewBox]="viewBox"
@@ -143,4 +144,36 @@
 
     <!-- <circle [attr.cx]="track[0].x" [attr.cy]="track[0].y" r="120" fill="red" /> -->
   </svg>
+
+  <!-- Connect each driver's dot to its broadcast label -->
+  <svg
+    class="driver-label-connectors"
+    [attr.viewBox]="labelConnectorViewBox"
+    preserveAspectRatio="none"
+    aria-hidden="true"
+  >
+    <line
+      *ngFor="let label of driverLabels; trackBy: trackByDriverLabel"
+      [attr.x1]="label.lineStartX"
+      [attr.y1]="label.lineStartY"
+      [attr.x2]="label.lineEndX"
+      [attr.y2]="label.lineEndY"
+      stroke="#ffffff"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      vector-effect="non-scaling-stroke"
+    />
+  </svg>
+
+  <!-- Fixed-size labels positioned over the SVG -->
+  <div
+    *ngFor="let label of driverLabels; trackBy: trackByDriverLabel"
+    class="driver-broadcast-tag"
+    [style.left.px]="label.left"
+    [style.top.px]="label.top"
+    [style.--driver-color]="label.color"
+    [attr.aria-label]="'Selected driver ' + label.code"
+  >
+    {{ label.code }}
+  </div>
 </div>

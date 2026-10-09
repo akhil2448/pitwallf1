@@ -1,4 +1,6 @@
 .track-container {
+  position: relative;
+
   width: 100%;
   height: 100%;
 
@@ -50,6 +52,67 @@
   animation: highlightPulse 1.2s ease-in-out infinite;
 }
 
+.driver-label-connectors {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: visible;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.driver-label-connectors line {
+  filter: drop-shadow(0 0 1px rgb(0 0 0 / 95%));
+}
+
+.driver-broadcast-tag {
+  position: absolute;
+  z-index: 10;
+
+  width: 84px;
+  height: 32px;
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 9px 0 25px;
+
+  background: #f7f7f7;
+  color: #111111;
+
+  border: 1px solid rgb(0 0 0 / 65%);
+  border-radius: 18px;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.35px;
+  line-height: 1;
+
+  white-space: nowrap;
+  pointer-events: none;
+
+  box-shadow: 0 2px 6px rgb(0 0 0 / 40%);
+}
+
+.driver-broadcast-tag::before {
+  content: "";
+
+  position: absolute;
+  left: 9px;
+  top: 5px;
+  bottom: 5px;
+
+  width: 5px;
+
+  background: var(--driver-color, #888888);
+  border-radius: 1px;
+}
+
 @keyframes highlightPulse {
   0% {
     opacity: 0.6;
@@ -59,5 +122,28 @@
   }
   100% {
     opacity: 0.6;
+  }
+}
+
+// Compact broadcast labels for phones and touch devices in landscape.
+@media (max-width: 1024px) and (orientation: landscape) and (pointer: coarse) {
+  .driver-broadcast-tag {
+    width: 70px;
+    height: 27px;
+
+    padding: 0 7px 0 21px;
+
+    font-size: 13px;
+    letter-spacing: 0.2px;
+
+    border-radius: 15px;
+  }
+
+  .driver-broadcast-tag::before {
+    left: 7px;
+    top: 4px;
+    bottom: 4px;
+
+    width: 4px;
   }
 }
