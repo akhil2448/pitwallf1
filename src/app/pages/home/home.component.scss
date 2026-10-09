@@ -1676,6 +1676,30 @@ video.feature-media {
 
     text-align: left;
   }
+
+  .performance-feature-start {
+    background: linear-gradient(
+      to bottom,
+      #1d1b1b 0%,
+      #3a201f 2%,
+      #84231f 5%,
+      #c52a23 8%,
+      #e22420 12%,
+      #e22420 100%
+    );
+  }
+
+  .performance-feature-end {
+    background: linear-gradient(
+      to bottom,
+      #e22420 0%,
+      #e22420 88%,
+      #c52a23 92%,
+      #84231f 95%,
+      #3a201f 98%,
+      #1d1b1b 100%
+    );
+  }
 }
 
 /* ==========================================================
@@ -1794,6 +1818,30 @@ video.feature-media {
 
   .feature-note {
     font-size: 13px;
+  }
+
+  .performance-feature-start {
+    background: linear-gradient(
+      to bottom,
+      #1d1b1b 0%,
+      #3a201f 1%,
+      #84231f 3%,
+      #c52a23 5%,
+      #e22420 8%,
+      #e22420 100%
+    );
+  }
+
+  .performance-feature-end {
+    background: linear-gradient(
+      to bottom,
+      #e22420 0%,
+      #e22420 92%,
+      #c52a23 95%,
+      #84231f 97%,
+      #3a201f 99%,
+      #1d1b1b 100%
+    );
   }
 }
 
