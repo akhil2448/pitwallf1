@@ -1,22 +1,37 @@
 @if (visible) {
   <div class="dialog-backdrop">
     <div class="dialog">
-      <div class="dialog-title">
+      <div class="dialog-title" [class.dialog-title--danger]="dangerTitle">
         {{ title }}
       </div>
 
       <div class="dialog-message">
-        {{ message }}
+        @if (highlightText && message.includes(highlightText)) {
+          {{ message.slice(0, message.indexOf(highlightText))
+          }}<strong class="dialog-message-highlight">{{ highlightText }}</strong
+          >{{
+            message.slice(message.indexOf(highlightText) + highlightText.length)
+          }}
+        } @else {
+          {{ message }}
+        }
+
+        <div class="dialog-message-footer">Please try another race.</div>
       </div>
 
-      <div class="dialog-actions">
-        <app-button
-          class="confirmation-button"
-          variant="secondary"
-          (clicked)="cancelled.emit()"
-        >
-          {{ cancelText }}
-        </app-button>
+      <div
+        class="dialog-actions"
+        [class.dialog-actions--single]="!showCancelButton"
+      >
+        @if (showCancelButton) {
+          <app-button
+            class="confirmation-button"
+            variant="secondary"
+            (clicked)="cancelled.emit()"
+          >
+            {{ cancelText }}
+          </app-button>
+        }
 
         <app-button class="confirmation-button" (clicked)="confirmed.emit()">
           {{ confirmText }}

@@ -538,6 +538,18 @@
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
 }
 
+/* Fade both lab actions only when both sessions have failed. */
+.lab-button--unavailable {
+  opacity: 0.42;
+  filter: saturate(0.45);
+}
+
+/* Preserve click behavior while removing the normal hover lift. */
+.lab-button--unavailable:hover {
+  transform: none;
+  box-shadow: none;
+}
+
 /* ==========================================================
    MOBILE PORTRAIT
    ========================================================== */

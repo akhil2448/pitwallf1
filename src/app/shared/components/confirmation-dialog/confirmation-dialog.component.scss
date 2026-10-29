@@ -34,6 +34,8 @@
 }
 
 .dialog-message {
+  font-family: "Formula1";
+
   margin-top: 14px;
 
   color: #cfcfcf;
@@ -51,6 +53,31 @@
   justify-content: flex-end;
 
   gap: 12px;
+}
+
+.dialog-title--danger {
+  color: #e22420;
+  font-family: "Formula1Bold";
+
+  text-align: center;
+}
+
+.dialog-message-highlight {
+  color: #e22420;
+  font-family: "Formula1Bold";
+  font-size: 16px;
+}
+
+.dialog-message-footer {
+  font-family: "Formula1Bold";
+  font-size: 16px;
+
+  margin-top: 12px;
+  text-align: center;
+}
+
+.dialog-actions--single {
+  justify-content: center;
 }
 
 /* ==========================================================

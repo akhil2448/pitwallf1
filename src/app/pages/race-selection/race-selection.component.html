@@ -158,6 +158,8 @@
       <div class="race-actions">
         <button
           class="lab-button simulation-button"
+          [class.lab-button--unavailable]="hasBothSessionsFailed(race)"
+          [attr.aria-disabled]="hasBothSessionsFailed(race)"
           (click)="openSimulationLab(race)"
         >
           SIMULATION LAB
@@ -165,6 +167,8 @@
 
         <button
           class="lab-button performance-button"
+          [class.lab-button--unavailable]="hasBothSessionsFailed(race)"
+          [attr.aria-disabled]="hasBothSessionsFailed(race)"
           (click)="openPerformanceLab(race)"
         >
           PERFORMANCE LAB
@@ -172,4 +176,15 @@
       </div>
     </div>
   </div>
+
+  <app-confirmation-dialog
+    [visible]="availabilityDialogVisible"
+    [title]="availabilityDialogTitle"
+    [message]="availabilityDialogMessage"
+    [highlightText]="availabilityDialogHighlightText"
+    [dangerTitle]="true"
+    [showCancelButton]="false"
+    confirmText="Got it"
+    (confirmed)="closeAvailabilityDialog()"
+  ></app-confirmation-dialog>
 </div>

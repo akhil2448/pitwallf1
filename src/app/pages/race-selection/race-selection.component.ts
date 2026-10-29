@@ -17,6 +17,8 @@ import { DriverSelectionResponse } from '../performance-lab/models/performance-l
 import { PwSelectComponent } from '../../shared/components/pw-select/pw-select.component';
 import { PwSelectOption } from '../../shared/components/pw-select/pw-select-option';
 
+import { ConfirmationDialogComponent } from '../../shared/components/confirmation-dialog/confirmation-dialog.component';
+
 export interface RaceSchedule {
   round: number;
   country: string;
@@ -55,6 +57,7 @@ interface YearScheduleResponse {
     FormsModule,
     SupportButtonComponent,
     PwSelectComponent,
+    ConfirmationDialogComponent,
   ],
   templateUrl: './race-selection.component.html',
   styleUrls: ['./race-selection.component.scss'],
@@ -78,6 +81,11 @@ export class RaceSelectionComponent implements OnInit {
   loading = false;
 
   error: string | null = null;
+
+  availabilityDialogVisible = false;
+  availabilityDialogTitle = 'Race data unavailable';
+  availabilityDialogMessage = '';
+  availabilityDialogHighlightText = '';
 
   private readonly MIN_LOADING_MS = 2500;
 
@@ -217,7 +225,40 @@ export class RaceSelectionComponent implements OnInit {
     });
   }
 
+  /**
+   * Only block the race when BOTH sessions have failed.
+   *
+   * A single green status means that at least one session is
+   * available, so the normal workflow should continue.
+   */
+  hasBothSessionsFailed(race: RaceSchedule): boolean {
+    return (
+      race.qualifyingDataStatus === 'failed' && race.raceDataStatus === 'failed'
+    );
+  }
+
+  private showUnavailableDataDialog(race: RaceSchedule): void {
+    this.availabilityDialogTitle = 'Race Data Unavailable';
+
+    this.availabilityDialogHighlightText = race.raceName;
+
+    this.availabilityDialogMessage =
+      `The qualifying and race data for ${race.raceName} ` +
+      'are either broken or unavailable.';
+
+    this.availabilityDialogVisible = true;
+  }
+
+  closeAvailabilityDialog(): void {
+    this.availabilityDialogVisible = false;
+  }
+
   async openSimulationLab(race: RaceSchedule): Promise<void> {
+    if (this.hasBothSessionsFailed(race)) {
+      this.showUnavailableDataDialog(race);
+      return;
+    }
+
     this.raceContext.selectedYear = this.selectedYear;
 
     this.raceContext.selectedRound = race.round;
@@ -242,6 +283,11 @@ export class RaceSelectionComponent implements OnInit {
   }
 
   async openPerformanceLab(race: RaceSchedule): Promise<void> {
+    if (this.hasBothSessionsFailed(race)) {
+      this.showUnavailableDataDialog(race);
+      return;
+    }
+
     this.raceContext.selectedYear = this.selectedYear;
 
     this.raceContext.selectedRound = race.round;

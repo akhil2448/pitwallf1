@@ -21,6 +21,12 @@ export class ConfirmationDialogComponent {
 
   @Input() cancelText = 'Cancel';
 
+  @Input() showCancelButton = true;
+
+  @Input() dangerTitle = false;
+
+  @Input() highlightText = '';
+
   @Output() confirmed = new EventEmitter<void>();
 
   @Output() cancelled = new EventEmitter<void>();
